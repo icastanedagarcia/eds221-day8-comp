@@ -1,0 +1,153 @@
+---
+title: "Day8-session"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+install.packages("patchwork")
+install.packages("ggrepel")
+install.packages("gghighlight")
+install.packages("ggExtra")
+install.packages("ggbeeswarm")
+
+
+```
+
+You can add options to executable code like this
+
+```{r}
+library(janitor)
+library(tidyverse)
+library(janitor)
+library(patchwork)
+library(ggrepel)
+library(beeswarm)
+library(ggplot2)
+library(here)
+library(dplyr)
+
+```
+
+```{r}
+#diff ways to code
+
+lizards <- read_csv("~/Desktop/LABs UCSB/EDS 221 - Fundamentals programming/Day8/eds221-day8-comp/data_tidy/lizards.csv")
+
+lizards <- read_csv(here("data_tidy","lizards.csv"))
+
+ggplot(data=lizards, aes(x=total_lenght, y=weight) + geom_point()
+
+ggplot(data=lizards) + geom_point(aes(x=total_lenght, y=weight))
+
+ggplot() + geom_point(data=lizards, aes(x=total_lenght, y=weight))
+
+```
+
+```{r}
+#choose colors using coolors.co
+
+ggplot(data=lizards, aes(x = total_length, y=weight)) + 
+  geom_histogram(color="orange",
+                 fill ="purple", 
+                 shape = 22,
+                 size = 3, 
+                 alpha = 0.2)
+```
+
+```{r}
+ggplot(data=lizards, aes(x = total_length, y=weight)) + 
+  geom_histogram(color="orange",
+                 fill ="purple", 
+                 linewidth =2,
+                 linetype = "doted")
+```
+
+```{r}
+ggplot(data=lizards, aes(x = total_length, y=weight)) + 
+  geom_point(aes(color = common_name, 
+                 size= total_length),
+             alpha = 0.5) + 
+  scale_color_brewer(palette= "Set3") # a whole set of custom pallette
+```
+
+```{r}
+ggplot(data=lizards, aes(x = total_length, y=weight)) + 
+  geom_point(aes(color = common_name, 
+                 size= total_length),
+             alpha = 0.5) + 
+  scale_color_discrete(type = c("#8963BA", "#8963AA", "#8933AB", "#90C290", "#AFE3C0", "#AFE3C2", "#89E3C0", "#EDF0DA"))
+```
+
+```{r}
+ggplot(data=lizards, aes(x = total_length, y=weight)) + 
+  geom_jitter(aes(color = common_name)) + 
+  theme_bw()
+
+ggplot(data=lizards, aes(x = site, y=weight)) + 
+  geom_jitter(aes(color = common_name)) + 
+  theme_light()
+
+ggplot(data=lizards, aes(x= total_length, y= weight)) +
+  geom_point()+
+  labs(x= "total length (mm)",
+       y= "Weigth (grams)",
+       title = "lizard size")
+```
+
+```{r}
+ggplot(data=lizards, aes(x=total_length, y= weight))+
+  geom_point() +
+  facet_wrap(~common_name, ncol = 3, scales="free") + 
+  labs(x="Total length (mm)",
+       y="Weight(grams)")
+
+ggplot(data=lizards, aes(x=total_length, y= weight))+
+  geom_point() +
+  facet_wrap(~common_name, ncol = 3) + 
+  labs(x="Total length (mm)",
+       y="Weight(grams)")
+```
+
+```{r}
+
+ggplot(data=lizards, aes(x=total_length, y=weight)) +
+  geom_point() +
+  facet_grid(sex~tail) # ~ is the sign for the next word to become the variable to facet in this case "tail". As a result, for male tail broken and w for male tail broken
+```
+
+```{r}
+lizards_counts <- lizards %>% count(common_name)
+
+ggplot(data=lizards_counts, 
+       aes(y = fct_reorder(common_name,n), x = n)) +
+  geom_col()
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = lizards, aes(x = total_length, y=weight))+
+  geom_point(aes(color=common_name, 
+                 shape = common_name), 
+             size=2) +
+  labs(color= "lizard  species") +
+  facet_wrap(~common_name, scales = "free") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(data=lizards, aes(y=fct_infreq(common_name))) + #order it to less to more common 
+  geom_bar(aes(fill=site)) + # bars proportional to the counts (we don't have x)
+  theme_minimal() +
+  labs(x= "lizard counts",
+       y= "species(common name)") +
+  facet_grid(sex~tail) #break it down by sex tails broken and whole. It looks for the detailed values 
+```
